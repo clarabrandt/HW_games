@@ -1,18 +1,19 @@
 import {Entity, PrimaryGeneratedColumn, Column} from "typeorm";
+import { BaseEntity } from 'typeorm/repository/BaseEntity'
 
 @Entity()
-export class Game {
+export class Game extends BaseEntity {
 
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column('text')
     name: string;
 
-    @Column()
+    @Column('text')
     color: string;
 
-    @Column()
-    board: JSON;
+    @Column('json', {nullable: true})
+    board: object;
 
 }
