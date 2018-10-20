@@ -22,22 +22,32 @@ let GameController = class GameController {
     createGame(game) {
         const colors = ['red', 'blue', 'green', 'yellow', 'magenta'];
         game.color = colors[Math.floor(Math.random() * colors.length)];
+        const defaultBoard = [
+            ['o', 'o', 'o'],
+            ['o', 'o', 'o'],
+            ['o', 'o', 'o']
+        ];
+        game.board = defaultBoard;
         return game.save();
     }
     async updateGame(id, update) {
         const game = await entity_1.Game.findOne(id);
         if (!game)
             throw new routing_controllers_1.NotFoundError('Cannot find game');
-        return entity_1.Game.merge(game, update).save();
+        const estado_atual_do_tabuleiro = game.board;
+        const novo_estado_do_tabuleiro = update.board;
+        if (moves(estado_atual_do_tabuleiro, novo_estado_do_tabuleiro) === 0) {
+            throw new routing_controllers_1.BadRequestError('You should make one move');
+        }
+        else if (moves(estado_atual_do_tabuleiro, novo_estado_do_tabuleiro) === 1) {
+            return entity_1.Game.merge(game, update).save();
+        }
+        else {
+            throw new routing_controllers_1.BadRequestError('You can only make one move');
+        }
     }
     async getGame(id) {
-        const defaultBoard = [
-            ['o', 'o', 'o'],
-            ['o', 'o', 'o'],
-            ['o', 'o', 'o']
-        ];
-        const game = await entity_1.Game.findOne(id);
-        return Object.assign({}, game, { board: defaultBoard });
+        return await entity_1.Game.findOne(id);
     }
 };
 __decorate([
@@ -49,7 +59,7 @@ __decorate([
 __decorate([
     routing_controllers_1.Post('/games'),
     routing_controllers_1.HttpCode(201),
-    __param(0, routing_controllers_1.Body({ validate: true })),
+    __param(0, routing_controllers_1.Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [entity_1.Game]),
     __metadata("design:returntype", void 0)
@@ -73,4 +83,8 @@ GameController = __decorate([
     routing_controllers_1.JsonController()
 ], GameController);
 exports.default = GameController;
+const moves = (board1, board2) => board1
+    .map((row, y) => row.filter((cell, x) => board2[y][x] !== cell))
+    .reduce((a, b) => a.concat(b))
+    .length;
 //# sourceMappingURL=controller.js.map
