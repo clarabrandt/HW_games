@@ -1,5 +1,6 @@
 import {Entity, PrimaryGeneratedColumn, Column} from "typeorm";
-import { BaseEntity } from 'typeorm/repository/BaseEntity'
+import { BaseEntity } from 'typeorm/repository/BaseEntity';
+import {IsIn} from 'class-validator';
 
 @Entity()
 export class Game extends BaseEntity {
@@ -9,8 +10,9 @@ export class Game extends BaseEntity {
 
     @Column('text')
     name: string;
-
+    
     @Column('text')
+    @IsIn(['red', 'blue', 'green', 'yellow', 'magenta'])
     color: string;
 
     @Column('json', {nullable: true})

@@ -13,7 +13,7 @@ export default class GameController {
 
   @Post('/games')
   @HttpCode(201)
-  createGame(@Body() game: Game) {
+  createGame(@Body({validate: true}) game: Game) {
     const colors=['red', 'blue', 'green', 'yellow', 'magenta'];
     game.color = colors[Math.floor(Math.random()*colors.length)]
     return game.save()
@@ -22,12 +22,11 @@ export default class GameController {
   @Put('/games/:id')
   async updateGame(
     @Param('id') id: number,
-    @Body() update: Partial<Game>
+    @Body({validate: true}) update: Partial<Game>
   ) {
     const game = await Game.findOne(id)
     if (!game) throw new NotFoundError('Cannot find game')
     
-
     return Game.merge(game, update).save()
   }
 }

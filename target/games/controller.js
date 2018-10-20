@@ -40,7 +40,7 @@ __decorate([
 __decorate([
     routing_controllers_1.Post('/games'),
     routing_controllers_1.HttpCode(201),
-    __param(0, routing_controllers_1.Body()),
+    __param(0, routing_controllers_1.Body({ validate: true })),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [entity_1.Game]),
     __metadata("design:returntype", void 0)
@@ -48,7 +48,7 @@ __decorate([
 __decorate([
     routing_controllers_1.Put('/games/:id'),
     __param(0, routing_controllers_1.Param('id')),
-    __param(1, routing_controllers_1.Body()),
+    __param(1, routing_controllers_1.Body({ validate: true })),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number, Object]),
     __metadata("design:returntype", Promise)
