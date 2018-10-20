@@ -26,7 +26,21 @@ export default class GameController {
   ) {
     const game = await Game.findOne(id)
     if (!game) throw new NotFoundError('Cannot find game')
-    
     return Game.merge(game, update).save()
   }
+
+  @Get('/games/:id')
+  async getGame(
+      @Param('id') id: number
+  ) {
+      const defaultBoard = [
+        ['o', 'o', 'o'],
+        ['o', 'o', 'o'],
+        ['o', 'o', 'o']
+      ];
+      const game = await Game.findOne(id)
+      
+      return { ...game, board: defaultBoard }
+  }
 }
+
