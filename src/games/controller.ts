@@ -1,5 +1,6 @@
-import { JsonController, Get, Post, HttpCode, Body, Put, Param, NotFoundError, BadRequestError} from 'routing-controllers'
+import { JsonController, Get, Post, HttpCode, Body, Put, Param, NotFoundError, BadRequestError } from 'routing-controllers'
 import {Game} from './entity'
+
 
 
 @JsonController()
@@ -36,14 +37,19 @@ export default class GameController {
     
     const currentBoard = game.board
     const nextBoard = update.board;
-
-    if(moves(currentBoard, nextBoard) === 0){
-      throw new BadRequestError('You should make one move')
-    }else if(moves(currentBoard, nextBoard) === 1){
-      return Game.merge(game, update).save()
-    } else {
-      throw new BadRequestError('You can only make one move')
+    console.log('currentBoard -> ', currentBoard);
+    console.log('nextBoard -> ', nextBoard);
+    
+    if(nextBoard){
+      if(moves(currentBoard, nextBoard) < 1){
+        throw new BadRequestError('You should make one move')
+      }
+      if(moves(currentBoard, nextBoard) > 1){
+        throw new BadRequestError('You can only make one move')
+      } 
+    
     }
+    return Game.merge(game, update).save()
   }
 
   @Get('/games/:id')

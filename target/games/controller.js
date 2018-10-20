@@ -34,17 +34,19 @@ let GameController = class GameController {
         const game = await entity_1.Game.findOne(id);
         if (!game)
             throw new routing_controllers_1.NotFoundError('Cannot find game');
-        const estado_atual_do_tabuleiro = game.board;
-        const novo_estado_do_tabuleiro = update.board;
-        if (moves(estado_atual_do_tabuleiro, novo_estado_do_tabuleiro) === 0) {
-            throw new routing_controllers_1.BadRequestError('You should make one move');
+        const currentBoard = game.board;
+        const nextBoard = update.board;
+        console.log('currentBoard -> ', currentBoard);
+        console.log('nextBoard -> ', nextBoard);
+        if (nextBoard) {
+            if (moves(currentBoard, nextBoard) < 1) {
+                throw new routing_controllers_1.BadRequestError('You should make one move');
+            }
+            if (moves(currentBoard, nextBoard) > 1) {
+                throw new routing_controllers_1.BadRequestError('You can only make one move');
+            }
         }
-        else if (moves(estado_atual_do_tabuleiro, novo_estado_do_tabuleiro) === 1) {
-            return entity_1.Game.merge(game, update).save();
-        }
-        else {
-            throw new routing_controllers_1.BadRequestError('You can only make one move');
-        }
+        return entity_1.Game.update(game, update);
     }
     async getGame(id) {
         return await entity_1.Game.findOne(id);
